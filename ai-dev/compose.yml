@@ -4,21 +4,31 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        CODEX_VERSION: latest
-        DSH_VERSION: latest
+        CODEX_VERSION: ${CODEX_VERSION:-latest}
+        DSH_VERSION: ${DSH_VERSION:-latest}
 
+    image: ai-dev:latest
     container_name: ai-dev
+
+    network_mode: host
+
+    working_dir: /workspace
 
     volumes:
       - ~/Developer:/workspace
-      - codex-data:/home/node/.codex
-      - dsh-data:/home/node/.dsh
+      - codex-config:/home/node/.codex
+      - dsh-config:/home/node/.dsh
+      - pnpm-store:/pnpm/store
 
-    stdin_open: true
+    init: true
+    stop_grace_period: 2s
     tty: true
+    restart: unless-stopped
 
 volumes:
-  codex-data:
+  codex-config:
     external: true
-  dsh-data:
+  dsh-config:
+    external: true
+  pnpm-store:
     external: true
