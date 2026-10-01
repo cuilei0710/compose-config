@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~
+.zed
