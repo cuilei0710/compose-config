@@ -4,21 +4,30 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
+        NODE_VERSION: ${NODE_VERSION:-lts}
         CODEX_VERSION: ${CODEX_VERSION:-latest}
         DSH_VERSION: ${DSH_VERSION:-latest}
+        TZ: ${TZ:-Asia/Shanghai}
 
     image: ai-dev:latest
     container_name: ai-dev
 
     network_mode: host
 
+    security_opt:
+      - seccomp=unconfined
+
     working_dir: /workspace
+
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
 
     volumes:
       - ~/Developer:/workspace
       - codex-config:/home/node/.codex
+      - skills-data:/home/node/.agents
       - dsh-config:/home/node/.dsh
-      - pnpm-store:/pnpm/store
+      - pnpm-store:/pnpm/cache
 
     init: true
     stop_grace_period: 2s
@@ -28,7 +37,12 @@ services:
 volumes:
   codex-config:
     external: true
+
   dsh-config:
     external: true
+
   pnpm-store:
+    external: true
+
+  skills-data:
     external: true
